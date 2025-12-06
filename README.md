@@ -1,78 +1,36 @@
-## Spendly
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A modern personal finance app for tracking accounts, transactions, and budgets.
+## Getting Started
 
-### Features
+First, run the development server:
 
-- **Authentication**: Email/SSO powered by Clerk.
-- **Accounts & Budgets**: Create accounts, view balances, and track budget progress.
-- **Transactions**: Add, edit, filter, sort, paginate, and export CSV.
-- **Charts & Insights**: Responsive Recharts visualizations for trends and categories.
-- **Responsive UI**: Tailwind CSS layouts optimized for mobile, tablet, and desktop .
-- **Theming**: Light/dark mode with OKLCH-based design tokens.
-
-### Tech Stack
-
-- **Framework**: Next.js 15 (App Router)
-- **UI**: React 19, Tailwind CSS 4, Radix UI, Lucide icons
-- **Auth**: Clerk
-- **Data**: Prisma, PostgreSQL (via Prisma schema)
-- **Email**: React Email, Resend
-- **Jobs/Events**: Inngest
-- **Charts**: Recharts
-
-### Getting Started
-
-1. Clone and install:
-```bash
-npm install
-```
-2. Set environment variables (create `.env.local`):
-```bash
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-CLERK_SECRET_KEY=...
-
-# Database
-DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DB
-
-# Resend (email)
-RESEND_API_KEY=...
-
-# Inngest (optional)
-INNGEST_EVENT_KEY=...
-```
-3. Generate and migrate database:
-```bash
-npx prisma generate
-npx prisma migrate dev
-```
-4. Seed sample data (optional):
 ```bash
 npm run dev
-# In another terminal (or trigger /api/seed route if provided)
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
-5. Run the dev server:
-```bash
-npm run dev
-```
-Open `http://localhost:3000`.
 
-### Usage
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- Sign in to access the dashboard.
-- Create an account and start adding transactions.
-- Use filters and sorting in the transactions table; export current view as CSV.
-- Switch themes via the header toggle.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### Contributing
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Contributions are welcome!
-- Fork the repository and create a feature branch.
-- Follow the existing code style and Tailwind conventions.
-- Add meaningful names and avoid overly short identifiers.
-- Submit a pull request with a clear description and screenshots if UI changes.
+## Learn More
 
-### License
+To learn more about Next.js, take a look at the following resources:
 
-MIT License. See `LICENSE` if present; otherwise the project is provided under MIT by default.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
