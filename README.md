@@ -8,7 +8,7 @@ A modern personal finance app for tracking accounts, transactions, and budgets.
 - **Accounts & Budgets**: Create accounts, view balances, and track budget progress.
 - **Transactions**: Add, edit, filter, sort, paginate, and export CSV.
 - **Charts & Insights**: Responsive Recharts visualizations for trends and categories.
-- **Responsive UI**: Tailwind CSS layouts optimized for mobile, tablet, and desktop.
+- **Responsive UI**: Tailwind CSS layouts optimized for mobile, tablet, and desktop .
 - **Theming**: Light/dark mode with OKLCH-based design tokens.
 
 ### Tech Stack
