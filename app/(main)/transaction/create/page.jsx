@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { getUserAccounts } from "@/actions/dashboard";
 import { defaultCategories } from "@/data/categories";
 import { AddTransactionForm } from "../_components/transaction-form";
