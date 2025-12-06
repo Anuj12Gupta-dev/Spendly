@@ -1,5 +1,5 @@
 {
-  "name": "spendly-clone",
+  "name": "spendly",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@arcjet/inspect": "^1.0.0-beta.15",
-    "@arcjet/next": "^1.0.0-beta.15",
+    "@arcjet/inspect": "^1.0.0-beta.7",
+    "@arcjet/next": "^1.0.0-beta.7",
     "@bufbuild/protobuf": "^2.10.1",
     "@clerk/nextjs": "^6.36.0",
     "@google/generative-ai": "^0.24.1",

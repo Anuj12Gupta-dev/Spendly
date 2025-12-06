@@ -52,8 +52,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
 
   useEffect(() => {
     if (updatedBudget?.success) {
-      setIsEditing(false);
-      toast.success("Budget updated successfully");
+      Promise.resolve().then(() => setIsEditing(false)); toast.success("Budget updated successfully");
     } else if (updatedBudget && !updatedBudget.success) {
       toast.error(updatedBudget.error || "Failed to update budget");
     }
@@ -105,7 +104,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
               <>
                 <CardDescription>
                   {initialBudget
-                    ? `₹${currentExpenses.toFixed(2)} of ₹${initialBudget.amount.toFixed(2)} spent`: "No budget set"}
+                    ? `₹${currentExpenses.toFixed(2)} of ₹${initialBudget.amount.toFixed(2)} spent` : "No budget set"}
                 </CardDescription>
                 <Button
                   variant="ghost"
@@ -132,7 +131,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                   : percentUsed >= 75
                     ? "bg-yellow-500"
                     : "bg-green-500"
-              }`}
+                }`}
             />
             <p className="text-xs text-muted-foreground text-right">
               {percentUsed.toFixed(1)}% used

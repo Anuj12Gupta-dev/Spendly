@@ -1,24 +1,14 @@
-import arcjet, { detectBot, shield, tokenBucket } from "@arcjet/next";
+// app/api/arcjet/route.js
+import aj from "@/lib/arcjet";
+import { NextResponse } from "next/server";
 
-const aj = arcjet({
-  key: process.env.ARCJET_KEY,
-  characteristics: ["userId"], // Track based on Clerk userId
-  rules: [
-    // Rate limiting specifically for collection creation
-    shield({
-      mode: 'LIVE',
-    }),
-    detectBot({
-      mode: 'LIVE',
-      allow: ["CATEGORY:SEARCH_ENGINE", "GO_HTTP"]
-    }),
-    tokenBucket({
-      mode: "LIVE",
-      refillRate: 10, // 10 collections
-      interval: 3600, // per hour
-      capacity: 10, // maximum burst capacity
-    }),
-  ],
-});
+export async function GET(req) {
+  // You can adjust this logic as you like. This is just a simple example.
+  const decision = await aj.protect(req, { requested: 1 });
 
-export default aj;
+  if (decision.isDenied()) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

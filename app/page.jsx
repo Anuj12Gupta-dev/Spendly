@@ -96,7 +96,7 @@ export default function Home() {
       <section className="py-20 gradient">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to get confident with money?</h2>
-          <p className="text-white/80 mb-8 max-w-2xl mx-auto">Join thousands taking control with Spendly's simple, powerful tools.</p>
+          <p className="text-white/80 mb-8 max-w-2xl mx-auto">Join thousands taking control with Spendly&aposs simple, powerful tools.</p>
           <Link href="/dashboard">
             <Button
               size="lg"
