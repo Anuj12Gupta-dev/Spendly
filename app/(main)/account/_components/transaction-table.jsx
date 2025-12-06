@@ -180,10 +180,14 @@ export function TransactionTable({ transactions }) {
   };
 
   useEffect(() => {
-    if (deleted && !deleteLoading) {
-      toast.error("Transactions deleted successfully");
+    if (deleted?.success && !deleteLoading) {
+      toast.success("Transactions deleted successfully");
+      // Refresh the page to show updated data
+      router.refresh();
+    } else if (deleted && !deleted.success && !deleteLoading) {
+      toast.error(deleted.error || "Failed to delete transactions");
     }
-  }, [deleted, deleteLoading]);
+  }, [deleted, deleteLoading, router]);
 
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -403,7 +407,7 @@ export function TransactionTable({ transactions }) {
                         : "text-green-500"
                     )}
                   >
-                    {transaction.type === "EXPENSE" ? "-" : "+"}$
+                    {transaction.type === "EXPENSE" ? "-" : "+"} ₹{' '}
                     {transaction.amount.toFixed(2)}
                   </TableCell>
                   <TableCell>

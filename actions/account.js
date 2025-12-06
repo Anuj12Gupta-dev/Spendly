@@ -16,36 +16,41 @@ const serializeDecimal = (obj) => {
 };
 
 export async function getAccountWithTransactions(accountId) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) throw new Error("User not found");
-
-  const account = await db.account.findUnique({
-    where: {
-      id: accountId,
-      userId: user.id,
-    },
-    include: {
-      transactions: {
-        orderBy: { date: "desc" },
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+  
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+  
+    if (!user) throw new Error("User not found");
+  
+    const account = await db.account.findUnique({
+      where: {
+        id: accountId,
+        userId: user.id,
       },
-      _count: {
-        select: { transactions: true },
+      include: {
+        transactions: {
+          orderBy: { date: "desc" },
+        },
+        _count: {
+          select: { transactions: true },
+        },
       },
-    },
-  });
-
-  if (!account) return null;
-
-  return {
-    ...serializeDecimal(account),
-    transactions: account.transactions.map(serializeDecimal),
-  };
+    });
+  
+    if (!account) return null;
+  
+    return {
+      ...serializeDecimal(account),
+      transactions: account.transactions.map(serializeDecimal),
+    };
+  } catch (error) {
+    console.error("Error fetching account with transactions:", error);
+    throw new Error("Failed to load account details. Please try again later.");
+  }
 }
 
 export async function bulkDeleteTransactions(transactionIds) {
@@ -77,7 +82,6 @@ export async function bulkDeleteTransactions(transactionIds) {
       return acc;
     }, {});
     
-
     // Delete transactions and update account balances in a transaction
     await db.$transaction(async (tx) => {
       // Delete transactions
@@ -108,7 +112,8 @@ export async function bulkDeleteTransactions(transactionIds) {
 
     return { success: true };
   } catch (error) {
-    return { success: false, error: error.message };
+    console.error("Error deleting transactions:", error);
+    return { success: false, error: "Failed to delete transactions. Please try again later." };
   }
 }
 
@@ -144,8 +149,9 @@ export async function updateDefaultAccount(accountId) {
     });
 
     revalidatePath("/dashboard");
-    return { success: true, data: serializeTransaction(account) };
+    return { success: true, data: serializeDecimal(account) };
   } catch (error) {
-    return { success: false, error: error.message };
+    console.error("Error updating default account:", error);
+    return { success: false, error: "Failed to update default account. Please try again later." };
   }
 }

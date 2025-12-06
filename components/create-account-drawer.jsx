@@ -59,10 +59,12 @@ export function CreateAccountDrawer({ children }) {
   };
 
   useEffect(() => {
-    if (newAccount) {
+    if (newAccount?.success) {
       toast.success("Account created successfully");
       reset();
       setOpen(false);
+    } else if (newAccount && !newAccount.success) {
+      toast.error(newAccount.error || "Failed to create account");
     }
   }, [newAccount, reset]);
 

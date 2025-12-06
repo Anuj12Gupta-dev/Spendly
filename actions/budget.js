@@ -59,7 +59,12 @@ export async function getCurrentBudget(accountId) {
     };
   } catch (error) {
     console.error("Error fetching budget:", error);
-    throw error;
+    // Return default values instead of throwing to prevent app crashes
+    return {
+      budget: null,
+      currentExpenses: 0,
+      error: "Failed to load budget information. Please try again later."
+    };
   }
 }
 
@@ -74,17 +79,23 @@ export async function updateBudget(amount) {
 
     if (!user) throw new Error("User not found");
 
+    // Validate amount
+    const budgetAmount = parseFloat(amount);
+    if (isNaN(budgetAmount) || budgetAmount <= 0) {
+      throw new Error("Invalid budget amount. Please enter a valid positive number.");
+    }
+
     // Update or create budget
     const budget = await db.budget.upsert({
       where: {
         userId: user.id,
       },
       update: {
-        amount,
+        amount: budgetAmount,
       },
       create: {
         userId: user.id,
-        amount,
+        amount: budgetAmount,
       },
     });
 
@@ -95,6 +106,8 @@ export async function updateBudget(amount) {
     };
   } catch (error) {
     console.error("Error updating budget:", error);
-    return { success: false, error: error.message };
+    // Return a user-friendly error message
+    const errorMessage = error.message || "Failed to update budget. Please try again later.";
+    return { success: false, error: errorMessage };
   }
 }

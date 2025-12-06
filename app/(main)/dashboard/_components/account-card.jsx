@@ -37,9 +37,10 @@ export function AccountCard({ account }) {
   };
 
   useEffect(() => {
-    console.log(updatedAccount)
     if (updatedAccount?.success) {
       toast.success("Default account updated successfully");
+    } else if (updatedAccount && !updatedAccount.success) {
+      toast.error(updatedAccount.error || "Failed to update default account");
     }
   }, [updatedAccount]);
 
@@ -64,7 +65,7 @@ export function AccountCard({ account }) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            ${parseFloat(balance).toFixed(2)}
+            ₹{parseFloat(balance).toFixed(2)}
           </div>
           <p className="text-xs text-muted-foreground">
             {type.charAt(0) + type.slice(1).toLowerCase()} Account

@@ -54,6 +54,8 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
     if (updatedBudget?.success) {
       setIsEditing(false);
       toast.success("Budget updated successfully");
+    } else if (updatedBudget && !updatedBudget.success) {
+      toast.error(updatedBudget.error || "Failed to update budget");
     }
   }, [updatedBudget]);
 
@@ -103,7 +105,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
               <>
                 <CardDescription>
                   {initialBudget
-                    ? `$${currentExpenses.toFixed(2)} of $${initialBudget.amount.toFixed(2)} spent`: "No budget set"}
+                    ? `₹${currentExpenses.toFixed(2)} of ₹${initialBudget.amount.toFixed(2)} spent`: "No budget set"}
                 </CardDescription>
                 <Button
                   variant="ghost"

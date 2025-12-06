@@ -65,6 +65,11 @@ export async function createTransaction(data) {
       throw new Error("Account not found");
     }
 
+    // Validate amount
+    if (isNaN(data.amount) || data.amount <= 0) {
+      throw new Error("Invalid amount. Please enter a valid positive number.");
+    }
+
     // Calculate new balance
     const balanceChange = data.type === "EXPENSE" ? -data.amount : data.amount;
     const newBalance = account.balance.toNumber() + balanceChange;
@@ -95,30 +100,38 @@ export async function createTransaction(data) {
 
     return { success: true, data: serializeAmount(transaction) };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error creating transaction:", error);
+    // Return a user-friendly error message
+    const errorMessage = error.message || "Failed to create transaction. Please check your inputs and try again.";
+    return { success: false, error: errorMessage };
   }
 }
 
 export async function getTransaction(id) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
 
-  if (!user) throw new Error("User not found");
+    if (!user) throw new Error("User not found");
 
-  const transaction = await db.transaction.findUnique({
-    where: {
-      id,
-      userId: user.id,
-    },
-  });
+    const transaction = await db.transaction.findUnique({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
 
-  if (!transaction) throw new Error("Transaction not found");
+    if (!transaction) throw new Error("Transaction not found");
 
-  return serializeAmount(transaction);
+    return serializeAmount(transaction);
+  } catch (error) {
+    console.error("Error fetching transaction:", error);
+    throw new Error("Failed to load transaction details. Please try again later.");
+  }
 }
 
 export async function updateTransaction(id, data) {
@@ -144,6 +157,11 @@ export async function updateTransaction(id, data) {
     });
 
     if (!originalTransaction) throw new Error("Transaction not found");
+
+    // Validate amount
+    if (isNaN(data.amount) || data.amount <= 0) {
+      throw new Error("Invalid amount. Please enter a valid positive number.");
+    }
 
     // Calculate balance changes
     const oldBalanceChange =
@@ -190,7 +208,10 @@ export async function updateTransaction(id, data) {
 
     return { success: true, data: serializeAmount(transaction) };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error updating transaction:", error);
+    // Return a user-friendly error message
+    const errorMessage = error.message || "Failed to update transaction. Please check your inputs and try again.";
+    return { success: false, error: errorMessage };
   }
 }
 
@@ -223,7 +244,9 @@ export async function getUserTransactions(query = {}) {
 
     return { success: true, data: transactions };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error fetching user transactions:", error);
+    // Return empty array instead of throwing to prevent app crashes
+    return { success: false, data: [], error: "Failed to load transactions. Please try again later." };
   }
 }
 
@@ -281,11 +304,11 @@ export async function scanReceipt(file) {
       };
     } catch (parseError) {
       console.error("Error parsing JSON response:", parseError);
-      throw new Error("Invalid response format from Gemini");
+      throw new Error("Unable to extract information from receipt. Please try again or enter details manually.");
     }
   } catch (error) {
     console.error("Error scanning receipt:", error);
-    throw new Error("Failed to scan receipt");
+    throw new Error("Failed to scan receipt. Please try again or enter details manually.");
   }
 }
 

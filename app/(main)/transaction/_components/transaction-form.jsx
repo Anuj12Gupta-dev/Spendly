@@ -117,8 +117,10 @@ export function AddTransactionForm({
       );
       reset();
       router.push(`/account/${transactionResult.data.accountId}`);
+    } else if (transactionResult && !transactionResult.success && !transactionLoading) {
+      toast.error(transactionResult.error || "Failed to save transaction");
     }
-  }, [transactionResult, transactionLoading, editMode]);
+  }, [transactionResult, transactionLoading, editMode, router]);
 
   const type = watch("type");
   const isRecurring = watch("isRecurring");
