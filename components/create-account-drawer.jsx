@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
@@ -30,13 +30,14 @@ import { accountSchema } from "@/app/lib/schema";
 
 export function CreateAccountDrawer({ children }) {
   const [open, setOpen] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
     reset,
+    control, // IMPORTANT: required for useWatch
   } = useForm({
     resolver: zodResolver(accountSchema),
     defaultValues: {
@@ -46,6 +47,10 @@ export function CreateAccountDrawer({ children }) {
       isDefault: false,
     },
   });
+
+  // React Compiler–safe watched values
+  const type = useWatch({ control, name: "type" });
+  const isDefault = useWatch({ control, name: "isDefault" });
 
   const {
     loading: createAccountLoading,
@@ -62,7 +67,7 @@ export function CreateAccountDrawer({ children }) {
     if (newAccount?.success) {
       toast.success("Account created successfully");
       reset();
-      setOpen(false);
+      Promise.resolve().then(() => setOpen(false));
     } else if (newAccount && !newAccount.success) {
       toast.error(newAccount.error || "Failed to create account");
     }
@@ -77,17 +82,17 @@ export function CreateAccountDrawer({ children }) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
+
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Create New Account</DrawerTitle>
         </DrawerHeader>
+
         <div className="px-4 pb-4">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Account Name */}
             <div className="space-y-2">
-              <label
-                htmlFor="name"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="name" className="text-sm font-medium">
                 Account Name
               </label>
               <Input
@@ -100,16 +105,15 @@ export function CreateAccountDrawer({ children }) {
               )}
             </div>
 
+            {/* Account Type */}
             <div className="space-y-2">
-              <label
-                htmlFor="type"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="type" className="text-sm font-medium">
                 Account Type
               </label>
+
               <Select
+                value={type}
                 onValueChange={(value) => setValue("type", value)}
-                defaultValue={watch("type")}
               >
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select type" />
@@ -119,16 +123,15 @@ export function CreateAccountDrawer({ children }) {
                   <SelectItem value="SAVINGS">Savings</SelectItem>
                 </SelectContent>
               </Select>
+
               {errors.type && (
                 <p className="text-sm text-red-500">{errors.type.message}</p>
               )}
             </div>
 
+            {/* Initial Balance */}
             <div className="space-y-2">
-              <label
-                htmlFor="balance"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="balance" className="text-sm font-medium">
                 Initial Balance
               </label>
               <Input
@@ -143,6 +146,7 @@ export function CreateAccountDrawer({ children }) {
               )}
             </div>
 
+            {/* Default Toggle */}
             <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="space-y-0.5">
                 <label
@@ -155,19 +159,22 @@ export function CreateAccountDrawer({ children }) {
                   This account will be selected by default for transactions
                 </p>
               </div>
+
               <Switch
                 id="isDefault"
-                checked={watch("isDefault")}
+                checked={isDefault}
                 onCheckedChange={(checked) => setValue("isDefault", checked)}
               />
             </div>
 
+            {/* Actions */}
             <div className="flex gap-4 pt-4">
               <DrawerClose asChild>
                 <Button type="button" variant="outline" className="flex-1">
                   Cancel
                 </Button>
               </DrawerClose>
+
               <Button
                 type="submit"
                 className="flex-1"
